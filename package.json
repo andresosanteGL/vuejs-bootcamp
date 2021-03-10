@@ -11,7 +11,12 @@
   "dependencies": {
     "@mdi/font": "^5.9.55",
     "core-js": "^3.6.5",
+    "deepmerge": "^4.2.2",
+    "normalizr": "^3.6.1",
+    "query-string": "^4.3.4",
+    "ramda": "^0.27.1",
     "roboto-fontface": "^0.10.0",
+    "uuid": "^3.4.0",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
     "vuetify": "^2.4.0",
