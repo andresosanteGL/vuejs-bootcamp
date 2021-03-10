@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Home from '../views/Home.vue';
+import Home from '../views/home/home.vue';
 
 Vue.use(VueRouter);
 
@@ -16,13 +16,27 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: 'about' */ '../views/About.vue'),
+    component: () => import(/* webpackChunkName: 'about' */ '../views/about/about.vue'),
+  },
+  {
+    path: '/podcasts/:category?',
+    name: 'podcasts',
+    component: () =>
+      import(
+        /* webpackChunkName: "list-all-podcast" */ '../views/list-all-podcasts/list-all-podcasts.vue'
+      ),
+  },
+  {
+    path: '/favorites',
+    name: 'favorites',
+    component: () =>
+      import(
+        /* webpackChunkName: "list-all-favorites" */ '../views/list-all-favorites/list-all-favorites.vue'
+      ),
   },
 ];
 
 const router = new VueRouter({
-  mode: 'history',
-  base: process.env.BASE_URL,
   routes,
 });
 
