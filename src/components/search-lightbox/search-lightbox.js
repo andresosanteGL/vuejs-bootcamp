@@ -1,10 +1,12 @@
 import api from '../../api';
 import SearchInput from '../search-input/search-input.vue';
+import TrackList from '../track-list/track-list.vue';
 
 export default {
   name: 'SearchLightbox',
   components: {
     SearchInput,
+    TrackList,
   },
   data() {
     return {
