@@ -1,9 +1,15 @@
-import { head } from 'ramda';
+import { assocPath, head, map } from 'ramda';
 
 import { filterBySearchTerm } from '../../utils/filterBySearchTerm';
-import { SEARCH_MOCK_DATA } from '../../api/constants';
+import api from '../../api';
+import { getRandomPodcastCategory } from '../../utils/getRandomPodcastCategory';
 import TrackList from '../../components/track-list/track-list.vue';
 import TrackDetail from '../../components/track-detail/track-detail.vue';
+
+const MAX_LIST_ITEMS = 5;
+const DEFAULT_PODCAST_FILTER_PARAMS = {
+  limit: 5,
+};
 
 export default {
   name: 'Home',
@@ -14,9 +20,9 @@ export default {
   data() {
     return {
       category: '',
-      podcasts() {
-        return [];
-      },
+      favorites: [],
+      favoriteSearch: '',
+      podcasts: [],
       podcastSearch: '',
     };
   },
@@ -24,19 +30,36 @@ export default {
     podcastListFiltered() {
       return filterBySearchTerm(this.podcastSearch, this.podcasts);
     },
+    favoriteListFiltered() {
+      return filterBySearchTerm(this.favoriteSearch, this.favorites);
+    },
     track() {
       return head(this.podcasts) || {};
     },
   },
   methods: {
-    addFavorite(track) {
-      console.log('addFavorite -> track', track);
+    updatePodcastList() {
+      const listMapper = (track) => assocPath(['meta', 'favoriteId'], api.favoriteId(track), track);
+      this.podcasts = map(listMapper, this.podcasts);
     },
-    removeFavorite(track) {
-      console.log('removeFavorite -> track', track);
+    async addFavorite(track) {
+      this.favorites = await api.addFavorite(track, MAX_LIST_ITEMS);
+    },
+    async removeFavorite(track) {
+      this.favorites = await api.removeFavorite(track.meta.favoriteId, MAX_LIST_ITEMS);
     },
   },
-  mounted() {
-    this.podcasts = SEARCH_MOCK_DATA;
+  watch: {
+    favorites: {
+      handler() {
+        this.updatePodcastList();
+      },
+      deep: true,
+    },
+  },
+  async mounted() {
+    this.category = getRandomPodcastCategory();
+    this.podcasts = await api.search(this.category, DEFAULT_PODCAST_FILTER_PARAMS);
+    this.favorites = await api.getFavoritesTracks(MAX_LIST_ITEMS);
   },
 };
