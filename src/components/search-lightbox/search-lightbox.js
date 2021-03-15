@@ -19,7 +19,7 @@ export default {
     };
   },
   methods: {
-    ...addAndRemoveFavorite,
+    ...addAndRemoveFavorite(),
     async searchTracks(term) {
       if (!term) {
         return;
